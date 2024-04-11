@@ -58,23 +58,33 @@ int createSocket(int sockfd, int connfd,struct sockaddr_in servaddr, struct sock
 
 void receiveMessage(int connfd){
     char buffer1[2];
+    bzero(buffer, 32);
+    bzero(buffer1,2);
     read(connfd, buffer1, 2);
     printf("arrived %s1\n",buffer1);
+    
+    if(strcmp(buffer1, "") == 0){
+        return;
+    }
     strcpy(buffer, buffer1);    
 }
 
 // Driver function
 int main()
 {
-
-    
     populateGraph();
     connfd =createSocket(sockfd,  connfd, servaddr,  cli);
-
+START:
+    printf("START\n");
+    bzero(buffer, 32);
     receiveMessage(connfd);
     if(switchChoice(buffer,connfd) == -1){
-        write(connfd, "Wrong Input", 11);
+        // bzero(buffer,32);
+        // strcpy(buffer, "Wrong Input");
+        // write(connfd, buffer, 12);
     }
+    goto START;
+
     // Function for chatting between client and server
 
 

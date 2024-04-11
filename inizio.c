@@ -67,24 +67,30 @@ START
 //===============================================================================================================================*/
 //CASO 1
 //! WORK
-//! DONE
-void caseSeeCity(){
+//! CLIENT DONE
+// void caseSeeCity(){
    
-    allCity(graph);
+//     allCity(graph);
     
-}
+// }
 
 //CASO 2
 //! WORK
+//! CLIENT DONE
 void caseSeeCar(int initConnfdesc){
     char city[32];
     int id;
     char toSend[100];
+    int readBytes;
 INSERT2:
-    sprintf(toSend,"Insert a city to see all the car available \n");
+    sprintf(toSend,"Insert a city to see all the car available");
     write(initConnfdesc, toSend,100);
-    WAITREAD:
+WAITREAD:
+    read(initConnfdesc, city, 32);
+    bzero(city, 32);
     read(initConnfdesc, city, 32 );
+    
+
     // fgets(city, 32, stdin);
     size_t len = strlen(city);
     if(city[strlen(city) -1] != '\n'){
@@ -101,18 +107,23 @@ INSERT2:
         city[--len] = '\0';
     }
     if(alpha(city) == false){
-        printf("insert only letter \n");
-        goto INSERT2;
+        sprintf(toSend,"insert only letter \n");
+        write(initConnfdesc, "onlyLetter", 100);
+        goto WAITREAD;
     }
     if(strcmp(city, "exit") == 0 || strcmp(city, "quit") == 0){
         return;
     }
-    printf("Searching for the city of %s... \n",city);
+    sprintf(toSend,"Searching for the city of %s... \n",city);
+    write(initConnfdesc, toSend, 100);
     id = findCity(graph, cityAdded, city);
     if(id == -1){
-        printf("City not found \n");
-        goto INSERT2;
-    }else{findCar(graph, id);}
+        sprintf(toSend,"City not found \n");
+        write(initConnfdesc, toSend, 100);
+        goto WAITREAD;
+    }else{
+        findCar(graph, id);
+        }
     
 }
 //CASO 3
@@ -475,32 +486,28 @@ int switchChoice(char choice[], int initConnfd){
     switch (keyFromString(choice)) {
         case 1: 
             caseSeeCity();
-            return 1;
             break;
         case 2: 
             caseSeeCar(initConnfdesc);
-            return 1;
-
+            break;
         case 3: 
             caseAddCity(initConnfdesc);
-                        return 1;
-
+            break;
         case 4: 
             caseNewCar(initConnfdesc);
-                        return 1;
-
+            break;
         case 5: 
             caseRemoveCar(initConnfdesc);
-            return 1;
+            break;    
         case 6: 
             caseRemoveCity(initConnfdesc);
-            return 1;
+            break;
         case 7: 
             caseItinerary(initConnfdesc);
-            return 1;
+            break;
         case 8: 
             caseExit(initConnfdesc);
-            return 1;
+            break;
 
                     
         default:

@@ -244,10 +244,15 @@ int findCity(Node graph[], int numNodes,Label label){
     return -1;
 }
 
+//* CLIENT CONVERSIONE DONE
 void findCar(Node graph[],int id){
+    char sendString[256];
     for(int i = 0; i < graph[id].numCar;i++){
-        printf("Car %d: \n Name: %s \n Autonomy: %ld\n", i, graph[id].cars[i].label,graph[id].cars[i].autonomy );
+        bzero(sendString, 256);
+        sprintf(sendString,"Car %d: \n Name: %s \n Autonomy: %ld\n", i, graph[id].cars[i].label,graph[id].cars[i].autonomy );
+        write(connfd, sendString, sizeof(sendString));
     }
+    write(connfd,"gabbopower",11);
 }
 
 void removeCity(Node graph[], int id){

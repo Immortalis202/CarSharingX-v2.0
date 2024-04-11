@@ -94,6 +94,7 @@ int main()
 
     system("sh client/title.sh");
 INSERT:
+    printf("INSERT\n");
     fgets(choice, 2, stdin);
     if(choice[strlen(choice) -1] != '\n'){
         int dropped = 0;
@@ -101,7 +102,8 @@ INSERT:
             dropped++;
         if(dropped > 0){
             printf("Input over the limit \n");
-            goto INSERT;
+            fflush(stdout);
+            goto ENDWHILE;
         }
     }
     if(sendInput(choice, sockfd, sizeof(choice)) == -1){
@@ -119,19 +121,53 @@ INSERT:
             printf("%s",bufferClient);
             }
         case 2: 
-            read(sockfd,bufferClient,sizeof(bufferClient));
-            printf("%s\n",bufferClient); //* INSERT A CITY
+            
+INPUT2:
+            printf("INPUT2 \n");
             bzero(bufferClient, 256);
-            char city[32];
-            INPUT2:
-            fgets(city, 32, stdin);
-            write(sockfd, city, 32); // WRITE CITY
-
             read(sockfd,bufferClient,sizeof(bufferClient));
+            
+            printf("%s\n",bufferClient); //* INSERT A CITY
+            
+            bzero(bufferClient, 256);
+            printf("\n");
+            char city[32];
+            fgets(city, 32, stdin);
+            if(strcmp(city, "exit") == 0 || strcmp(city, "quit") == 0){
+                exit(1);
+            }
+            write(sockfd, city, 32); // WRITE CITY
+            read(sockfd,bufferClient,sizeof(bufferClient));
+            read(sockfd,bufferClient,sizeof(bufferClient));
+
+            
             if(strcasecmp(bufferClient,"overLimit") == 0){
                 printf("Over the limit\n");
-                goto INPUT2;
+                goto ENDWHILE;
             } 
+            if(strcasecmp(bufferClient,"onlyLetter") == 0){
+                printf("Insert only letter\n");
+                goto INPUT2;
+            }  
+            if(strcasecmp(bufferClient,"City not found") == 0){
+                //printf("City not found\n");
+                printf("%s\n",bufferClient);
+                //printf("Reinsert \n");
+                fflush(stdout);
+                // read(sockfd,bufferClient,sizeof(bufferClient));
+            }
+            while(-12){
+                bzero(bufferClient,sizeof(bufferClient));
+                read(sockfd,bufferClient,sizeof(bufferClient));
+                if(strcmp(bufferClient,"gabbopower") == 0){
+                    goto ENDWHILE;
+                }
+                printf("%s",bufferClient);
+                }
+            }
+
+
+
 
 
 
@@ -164,8 +200,9 @@ INSERT:
         goto INSERT;
     }
 
-    }
+    
 ENDWHILE:
+    printf("ENDWHILE\n");
     printf("\nWhat do you wanna do now?\n");
     goto INSERT;
 
